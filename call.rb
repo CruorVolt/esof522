@@ -37,18 +37,20 @@ File.open REPOS_LIST do |repos|
 			end
 		end
 
+=begin
 		#Stars call
 		stars_file = "#{repo.split("/")[1].chomp}_stars.csv"
 		File.open(File.join(file_path, stars_file), "w") do |new_file|
 			stars = client.stargazers(repo, :accept => "application/vnd.github.v3.star+json")
-			num = commits.length
-			puts "Found #{num} commits for #{repo}"
-			new_file.puts "CommitSHA, TotalCommits, CreationTime"
-			commits.each do |commit|
-				new_file.puts  "#{commit.sha}, #{num}, #{commit.commit.author.date.to_i}" 
+			num = stars.length
+			puts "Found #{num} stars for #{repo}"
+			new_file.puts "total, time"
+			stars.each do |star|
+				new_file.puts  "#{num}, #{star.starred_at}" 
 				num = num -1 #count down to initial commit
 			end
 		end
+=end
 
 	end
 end
