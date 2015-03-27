@@ -11,11 +11,13 @@ File.open REPOS_LIST do |repos|
 		line.chomp!
 		file_path = File.join(Dir.pwd, "issues_json", "#{line.split("/")[1].chomp}.json")
 		File.open(file_path, "w") do |new_file|
-			issues = client.list_issues(line, :state => "all") # appears to be pulling one page
+			issues = client.list_issues(line, :state => "all")
 			num = issues.length
 			puts "Found #{num} issues for #{line}"
+			new_file.puts "IssueID, TotalIssues, CreationTime"
 			issues.each do |issue|
-				new_file.puts "#{issue.id}, #{issue.created_at}"
+				new_file.puts  "#{issue.id}, #{num}, #{issue.created_at.to_i}"
+				num = num -1
 			end
 		end
 	end
