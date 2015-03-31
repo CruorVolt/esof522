@@ -16,17 +16,22 @@ def check(dir_path = Dir.pwd)
 			#list commits
 			IO.popen("git --git-dir=#{repo_path}/.git --work-tree=#{repo_path} rev-list master --reverse") { |io| 
 				while (sha = io.gets) do 
-					puts "commit #{sha}"
+					analyze_repo(repo_path, sha)
 				end 
 			}
-			#prep output file
-			#each commit:
-				#run checkstyle
-					#cyclomatic complexity - average of (max-per-file)
-				#collate results
-				#write "result, time" to output file
 		end
 	end
+end
+
+def analyze_repo(repo_path, commit_sha)
+	system("git --git-dir=#{repo_path}/.git --work-tree=#{repo_path} checkout #{commit_sha}")
+	system("java -jar checkstyle.jar' -c config.xml #{repo_path}")
+
+	#each commit:
+		#run checkstyle
+			#cyclomatic complexity - average of (max-per-file)
+		#collate results
+		#write "result, time" to output file
 end
 
 check
