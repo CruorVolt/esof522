@@ -17,7 +17,7 @@ forks_time = issues_time
 
 def write_api_results(call_proc, time_proc, repo_name, header = ["total","time"], dir_path = Dir.pwd, type = "")
 	repo = repo_name.split("/")[1] #seperate name from user name
-	File.open(File.join(dir_path, "#{repo}#{type}.csv"), "w") do |file|
+	File.open(File.join(dir_path, repo, "#{repo}#{type}.csv"), "w") do |file|
 		results = call_proc.call repo_name
 		count = results.length
 		file.puts header.join(",")
