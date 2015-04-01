@@ -1,5 +1,12 @@
 REPOS_LIST = "repos.txt"
 
+data_abtract_string = "Class Data Abstract Coupling is "
+cyclomatic_string = "Cyclomatic Complexity is "
+fan_out_string = "Class Fain-Out Complexity is "
+npath_string = "NPath Complexity is "
+line_length_string = "Line is longer than"
+file_length_string = "File length is "
+
 def check(dir_path = Dir.pwd)
 	File.open REPOS_LIST do |repos|
 		repos.each do |repo_name|
@@ -29,7 +36,11 @@ def analyze_repo(repo_path, commit_sha)
 		class_count = 0
 		total_complexity = 0
 		while (audit_line = io.gets) do 
-			location = audit_line.index "Cyclomatic Complexity"
+			
+			puts audit_line
+
+			#cyclomatic compexity
+			location = audit_line.index cyclomatic_string
 			if !location.nil? 
 				complexity = audit_line[location+25, 2].to_i
 				total_complexity = total_complexity + complexity
@@ -38,7 +49,7 @@ def analyze_repo(repo_path, commit_sha)
 		end
 		if (class_count > 0)
 			average_complexity = total_complexity / Float(class_count)
-			puts "Commit average = #{average_complexity}"
+			#puts "Commit average = #{average_complexity}"
 		end
 	}
 
