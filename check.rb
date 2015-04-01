@@ -25,7 +25,22 @@ end
 
 def analyze_repo(repo_path, commit_sha)
 	system("git --git-dir=#{repo_path}/.git --work-tree=#{repo_path} checkout #{commit_sha}")
-	system("java -jar checkstyle.jar' -c config.xml #{repo_path}")
+	IO.popen("java -jar checkstyle.jar -c config.xml #{repo_path}") { |io|
+		class_count = 0
+		total_complexity = 0
+		while (audit_line = io.gets) do 
+			location = audit_line.index "Cyclomatic Complexity"
+			if !location.nil? 
+				complexity = audit_line[location+25, 2].to_i
+				total_complexity = total_complexity + complexity
+				class_count = class_count + 1
+			end
+		end
+		if (class_count > 0)
+			average_complexity = total_complexity / Float(class_count)
+			puts "Commit average = #{average_complexity}"
+		end
+	}
 
 	#each commit:
 		#run checkstyle
