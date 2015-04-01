@@ -9,7 +9,7 @@
 	</module>
 
     <module name="TreeWalker">
-        <module name="CyclomaticComplexity"> <!-- cyclomatic -->
+        <module name="CyclomaticComplexity"> <!-- cyclomatic -recommended refactor at 8 -->
             <property name="max" value="0"/>
         </module>
 	<module name="ClassDataAbstractionCoupling"> <!-- instances of other classes, prod value 5?-->
@@ -18,8 +18,8 @@
 	<module name="ClassFanOutComplexity"> <!-- number of other classes relied on, prod value 10? -->
     		<property name="max" value="0"/>
 	</module>
-	<module name="NPathComplexity"> <!-- possible execution paths in function -->
-    		<property name="max" value="100"/>
+	<module name="NPathComplexity"> <!-- possible execution paths in function, prod value 100? - recommended max at 200 -->
+    		<property name="max" value="0"/>
 	</module>
 	<module name="LineLength"> <!-- flag line if over max characters -->
     		<property name="max" value="80"/>
