@@ -6,6 +6,7 @@ def is_float?(obj)
 end
 
 def mean(arr)
+	if (arr.length == 0) then return 0 end
 	total = 0
 	arr.each do |index|
 		total = total + index
@@ -14,6 +15,9 @@ def mean(arr)
 end
 
 def check(dir_path = Dir.pwd)
+	@processed = 0
+	@out = File.open("out.csv", "w")
+	@out.puts "commit,sha,cyclo,abstract,fanout,npath"
 	File.open REPOS_LIST do |repos|
 		repos.each do |repo_name|
 			repo_name.chomp!
@@ -29,7 +33,7 @@ def check(dir_path = Dir.pwd)
 			#list commits
 			IO.popen("git --git-dir=#{repo_path}/.git --work-tree=#{repo_path} rev-list master --reverse") { |io| 
 				while (sha = io.gets) do 
-					analyze_repo(repo_path, sha)
+					analyze_repo(repo_path, sha.chomp)
 				end 
 			}
 		end
@@ -118,10 +122,11 @@ def analyze_repo(repo_path, commit_sha)
 =end
 			
 		end
-		puts "Npath mean: #{mean npath_arr}"
-		puts "Cyclomatic mean: #{mean cyclomatic_arr}"
-		puts "Data Abstraction Coupling mean: #{mean data_abstract_arr}"
-		puts "Class Fan-out mean: #{mean fan_out_arr}"
+		@out.puts [@processed = @processed + 1, commit_sha[0,8], mean(cyclomatic_arr), mean(data_abstract_arr), mean(fan_out_arr), mean(npath_arr)].join(",")
+		#puts "Npath mean: #{mean npath_arr}"
+		#puts "Cyclomatic mean: #{mean cyclomatic_arr}"
+		#puts "Data Abstraction Coupling mean: #{mean data_abstract_arr}"
+		#puts "Class Fan-out mean: #{mean fan_out_arr}"
 
 	}
 
