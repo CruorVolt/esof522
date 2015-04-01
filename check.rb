@@ -1,11 +1,10 @@
+require 'pry'
 REPOS_LIST = "repos.txt"
 
-data_abtract_string = "Class Data Abstract Coupling is "
-cyclomatic_string = "Cyclomatic Complexity is "
-fan_out_string = "Class Fain-Out Complexity is "
-npath_string = "NPath Complexity is "
-line_length_string = "Line is longer than"
-file_length_string = "File length is "
+
+def is_float?(obj)
+	Float(obj.sub(/,/,"")) rescue false #thousands have commas in the string for some reason
+end
 
 def check(dir_path = Dir.pwd)
 	File.open REPOS_LIST do |repos|
@@ -31,33 +30,92 @@ def check(dir_path = Dir.pwd)
 end
 
 def analyze_repo(repo_path, commit_sha)
+
+	data_abstract_string = "Class Data Abstraction Coupling is "
+	cyclomatic_string = "Cyclomatic Complexity is "
+	fan_out_string = "Class Fan-Out Complexity is "
+	npath_string = "NPath Complexity is "
+	line_length_string = "Line is longer than"
+	file_length_string = "File length is "
+
 	system("git --git-dir=#{repo_path}/.git --work-tree=#{repo_path} checkout #{commit_sha}")
 	IO.popen("java -jar checkstyle.jar -c config.xml #{repo_path}") { |io|
 		class_count = 0
 		total_complexity = 0
-		while (audit_line = io.gets) do 
-			
-			puts audit_line
 
-			#cyclomatic compexity
+		cyclomatic_arr = Array.new
+		data_abstract_arr = Array.new
+		fan_out_arr = Array.new
+		npath_arr = Array.new
+		line_length_arr = Array.new
+		file_length_arr = Array.new
+		
+		while (audit_line = io.gets) do 
+
+			splitline = audit_line.split(/[ )]/)
+			
+			#cyclomatic complexity - add the cyclomatic complexity to the array
 			location = audit_line.index cyclomatic_string
 			if !location.nil? 
-				complexity = audit_line[location+25, 2].to_i
-				total_complexity = total_complexity + complexity
-				class_count = class_count + 1
+				splitline.each do |slice|
+					if (complexity = is_float? slice)
+						cyclomatic_arr << complexity
+						break
+					end
+				end
 			end
+
+			#data abstract coupling
+			location = audit_line.index data_abstract_string
+			if !location.nil?
+				splitline.each do |slice|
+					if (coupling = is_float? slice)
+						data_abstract_arr << coupling
+						break
+					end
+				end
+				puts audit_line
+			end
+
+			#class fan-out
+			location = audit_line.index fan_out_string
+			if !location.nil?
+				splitline.each do |slice|
+					if (fan = is_float? slice)
+						fan_out_arr << fan
+						break
+					end
+				end
+			end
+
+			#npath complexity
+			location = audit_line.index npath_string
+			if !location.nil?
+				splitline.each do |slice|
+					if (npath = is_float? slice)
+						npath_arr << npath
+						break
+					end
+				end
+			end
+
+=begin
+			#line length
+			locaton = audit_line.index line_length_string
+			if !location.nil?
+			end
+
+			#file length
+			location = audit_line.index file_length_string
+			if !location.nil?
+			end
+=end
+			
 		end
-		if (class_count > 0)
-			average_complexity = total_complexity / Float(class_count)
-			#puts "Commit average = #{average_complexity}"
-		end
+
+		binding.pry
 	}
 
-	#each commit:
-		#run checkstyle
-			#cyclomatic complexity - average of (max-per-file)
-		#collate results
-		#write "result, time" to output file
 end
 
 check
