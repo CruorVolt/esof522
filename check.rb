@@ -1,9 +1,16 @@
-require 'pry'
 REPOS_LIST = "repos.txt"
 
 
 def is_float?(obj)
 	Float(obj.sub(/,/,"")) rescue false #thousands have commas in the string for some reason
+end
+
+def mean(arr)
+	total = 0
+	arr.each do |index|
+		total = total + index
+	end
+	total / Float(arr.length)
 end
 
 def check(dir_path = Dir.pwd)
@@ -74,7 +81,6 @@ def analyze_repo(repo_path, commit_sha)
 						break
 					end
 				end
-				puts audit_line
 			end
 
 			#class fan-out
@@ -112,8 +118,11 @@ def analyze_repo(repo_path, commit_sha)
 =end
 			
 		end
+		puts "Npath mean: #{mean npath_arr}"
+		puts "Cyclomatic mean: #{mean cyclomatic_arr}"
+		puts "Data Abstraction Coupling mean: #{mean data_abstract_arr}"
+		puts "Class Fan-out mean: #{mean fan_out_arr}"
 
-		binding.pry
 	}
 
 end
