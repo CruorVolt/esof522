@@ -1,8 +1,19 @@
 REPOS_LIST = "repos.txt"
 
-
 def is_float?(obj)
 	Float(obj.sub(/,/,"")) rescue false #thousands have commas in the string for some reason
+end
+
+def p50(arr)
+	if (arr.length == 0) then return 0 end
+	#puts "got #{arr}, will be returning index #{(arr.length / 2.0).floor}"
+	return arr[(arr.length / 2.0).floor]
+end
+
+def p95(arr)
+	#puts "got #{arr}, returning index #{arr.length - (arr.length/20.0).floor - 1}"
+	if (arr.length == 0) then return 0 end
+	return arr[arr.length - (arr.length/20.0).floor - 1]
 end
 
 def mean(arr)
@@ -122,11 +133,7 @@ def analyze_repo(repo_path, commit_sha)
 =end
 			
 		end
-		@out.puts [@processed = @processed + 1, commit_sha[0,8], mean(cyclomatic_arr), mean(data_abstract_arr), mean(fan_out_arr), mean(npath_arr)].join(",")
-		#puts "Npath mean: #{mean npath_arr}"
-		#puts "Cyclomatic mean: #{mean cyclomatic_arr}"
-		#puts "Data Abstraction Coupling mean: #{mean data_abstract_arr}"
-		#puts "Class Fan-out mean: #{mean fan_out_arr}"
+		@out.puts [@processed = @processed + 1, commit_sha[0,8], mean cyclomatic_arr, mean data_abstract_arr, mean fan_out_arr, mean npath_arr]
 
 	}
 
