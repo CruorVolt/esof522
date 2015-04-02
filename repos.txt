@@ -1,1 +1,7 @@
 elastic/elasticsearch
+google/bazel
+google/google-api-java-client
+google/google-http-java-client
+facebook/presto
+facebook/buck
+apache/lucene-solr
