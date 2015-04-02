@@ -120,20 +120,8 @@ def analyze_repo(repo_path, commit_sha)
 				end
 			end
 
-=begin
-			#line length
-			locaton = audit_line.index line_length_string
-			if !location.nil?
-			end
-
-			#file length
-			location = audit_line.index file_length_string
-			if !location.nil?
-			end
-=end
-			
 		end
-		@out.puts [@processed = @processed + 1, commit_sha[0,8], mean cyclomatic_arr, mean data_abstract_arr, mean fan_out_arr, mean npath_arr]
+		@out.puts [@processed = @processed + 1, commit_sha[0,8], cyclomatic_arr.length, data_abstract_arr.length, fan_out_arr.length, npath_arr.length].join(",")
 
 	}
 

@@ -4,26 +4,18 @@
           "http://www.puppycrawl.com/dtds/configuration_1_3.dtd">
 
 <module name="Checker">
-	<module name="FileLength"> <!-- maximum allowable lines in file -->
-		<property name="max" value="1000"/>
-	</module>
-
     <module name="TreeWalker">
         <module name="CyclomaticComplexity"> <!-- cyclomatic -recommended refactor at 8 -->
-            <property name="max" value="0"/>
+            <property name="max" value="7"/>
         </module>
-	<module name="ClassDataAbstractionCoupling"> <!-- instances of other classes, prod value 5?-->
-    		<property name="max" value="0"/>
+	<module name="ClassDataAbstractionCoupling"> <!-- instances of other classes, prod value 5? defult=7 -->
+    		<property name="max" value="7"/>
 	</module>
-	<module name="ClassFanOutComplexity"> <!-- number of other classes relied on, prod value 10? -->
-    		<property name="max" value="0"/>
+	<module name="ClassFanOutComplexity"> <!-- number of other classes relied on, prod value 10? default=20-->
+    		<property name="max" value="20"/>
 	</module>
-	<module name="NPathComplexity"> <!-- possible execution paths in function, prod value 100? - recommended max at 200 -->
-    		<property name="max" value="0"/>
+	<module name="NPathComplexity"> <!-- possible execution paths in function, prod value 100? - recommended max at 200: see Nejmeh paper and refs -->
+    		<property name="max" value="200"/>
 	</module>
-	<module name="LineLength"> <!-- flag line if over max characters -->
-    		<property name="max" value="80"/>
-	</module>
-        
     </module>
 </module>
