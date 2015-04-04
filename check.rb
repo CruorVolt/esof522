@@ -60,7 +60,8 @@ def analyze_repo(repo_path, commit_sha)
 	line_length_string = "Line is longer than"
 	file_length_string = "File length is "
 
-	system("git --git-dir=#{repo_path}/.git --work-tree=#{repo_path} checkout #{commit_sha}")
+	system("git --git-dir=#{repo_path}/.git --work-tree=#{repo_path} checkout #{commit_sha} --quiet")
+	puts "CHECKOUT #{@processed} : #{commit_sha[0,8]}"
 	IO.popen("java -jar checkstyle.jar -c config.xml #{repo_path}") { |io|
 		class_count = 0
 		total_complexity = 0
@@ -121,10 +122,11 @@ def analyze_repo(repo_path, commit_sha)
 			end
 
 		end
+		print "\tcyclo #{cyclomatic_arr.length}\n\tdata_abstract #{data_abstract_arr.length}\n\tfan_out #{fan_out_arr.length}\n\tnpath #{npath_arr.length}\n"
 		@out.puts [@processed = @processed + 1, commit_sha[0,8], cyclomatic_arr.length, data_abstract_arr.length, fan_out_arr.length, npath_arr.length].join(",")
 
 	}
 
 end
 
-check ""
+check 
