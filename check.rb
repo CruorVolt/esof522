@@ -9,7 +9,7 @@ end
 def check(dir_path = Dir.pwd)
 	@processed = 0
 	@out = File.open("out.csv", "w")
-	@out.puts "commit,sha,cyclo,abstract,fanout,npath"
+	@out.puts "commit,sha,time,cyclo,abstract,fanout,npath"
 	File.open REPOS_LIST do |repos|
 		repos.each do |repo_name|
 			repo_name.chomp!
@@ -23,15 +23,17 @@ def check(dir_path = Dir.pwd)
 				puts "That directory already exists"
 			end
 			IO.popen("git --git-dir=#{repo_path}/.git --work-tree=#{repo_path} rev-list master --reverse") { |io| 
-				while (sha = io.gets) do 
-					analyze_commit(repo_path, sha.chomp)
+				while (sha_line = io.gets) do 
+					sha = sha_line.split(" ")[1].chomp
+					timestamp = io.gets.chomp
+					analyze_commit(repo_path, sha, timestamp)
 				end 
 			}
 		end
 	end
 end
 
-def analyze_commit(repo_path, commit_sha)
+def analyze_commit(repo_path, commit_sha, commit_time)
 
 	data_abstract = Metric.new "Class Data Abstraction Coupling is "
 	cyclomatic = Metric.new "Cyclomatic Complexity is "
@@ -49,7 +51,7 @@ def analyze_commit(repo_path, commit_sha)
 			end
 		end
 		print "\tcyclo #{cyclomatic.length}\n\tdata_abstract #{data_abstract.length}\n\tfan_out #{fan_out.length}\n\tnpath #{npath.length}\n"
-		@out.puts [@processed = @processed + 1, commit_sha[0,8], cyclomatic.length, data_abstract.length, fan_out.length, npath.length].join(",")
+		@out.puts [@processed = @processed + 1, commit_sha[0,8], commit_time, cyclomatic.length, data_abstract.length, fan_out.length, npath.length].join(",")
 
 	}
 
