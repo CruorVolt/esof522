@@ -14,7 +14,8 @@ def check(dir_path = Dir.pwd)
 		repos.each do |repo_name|
 			repo_name.chomp!
 			repo = repo_name.split("/")[1] #seperate name from GitHub user name
-			repo_path = File.join(dir_path, "checkstyle_output", repo)
+			#repo_path = File.join(dir_path, "checkstyle_output", repo) # OSX VERSION
+			repo_path = File.join("checkstyle_output", repo) # WINDOWS VERSION
 			puts "found repo: #{repo}, checking directory #{repo_path}"
 			if !(Dir.exist? repo_path) #clone if repo doesn't exist
 				puts "That directory doesn't exist, running git clone https://github.com/#{repo_name}.git #{File.join(dir_path, 'checkstyle_output')}"
@@ -22,7 +23,7 @@ def check(dir_path = Dir.pwd)
 			else 
 				puts "That directory already exists"
 			end
-			IO.popen("git --git-dir=#{repo_path}/.git --work-tree=#{repo_path} rev-list master --reverse") { |io| 
+			IO.popen("git --git-dir=#{repo_path}/.git --work-tree=#{repo_path} rev-list --format='%at' master --reverse") { |io| 
 				while (sha_line = io.gets) do 
 					sha = sha_line.split(" ")[1].chomp
 					timestamp = io.gets.chomp
