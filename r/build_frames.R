@@ -3,6 +3,7 @@ setwd("~/Documents/esof_522/project")
 out <- read.csv("out.csv")
 
 scaled <- data.frame(
+  time = out$time,
   commit = out$commit,
   cyclo = rescale(out$cyclo, 0:1),
   abstract = rescale(out$abstract, 0:1),

@@ -14,12 +14,12 @@ def check(dir_path = Dir.pwd)
 		repos.each do |repo_name|
 			repo_name.chomp!
 			repo = repo_name.split("/")[1] #seperate name from GitHub user name
-			#repo_path = File.join(dir_path, "checkstyle_output", repo) # OSX VERSION
-			repo_path = File.join("checkstyle_output", repo) # WINDOWS VERSION
+			#repo_path = File.join(dir_path, "repo_clones", repo) # OSX VERSION
+			repo_path = File.join("repo_clones", repo) # WINDOWS VERSION
 			puts "found repo: #{repo}, checking directory #{repo_path}"
 			if !(Dir.exist? repo_path) #clone if repo doesn't exist
-				puts "That directory doesn't exist, running git clone https://github.com/#{repo_name}.git #{File.join(dir_path, 'checkstyle_output')}"
-				system("git clone https://github.com/#{repo_name}.git #{File.join(dir_path, 'checkstyle_output', repo)}")
+				puts "That directory doesn't exist, running git clone https://github.com/#{repo_name}.git #{File.join(dir_path, 'repo_clones')}"
+				system("git clone https://github.com/#{repo_name}.git #{File.join(dir_path, 'repo_clones', repo)}")
 			else 
 				puts "That directory already exists"
 			end
