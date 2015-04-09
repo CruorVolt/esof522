@@ -1,17 +1,16 @@
 require_relative 'metric'
 
 REPOS_LIST = "repos.txt"
+OUTPUT_DIR = "checkstyle_results"
 
 def is_float?(obj)
 	Float(obj.sub(/,/,"")) rescue false #thousands have commas in the string for some reason
 end
 
 def check(dir_path = Dir.pwd)
-	@processed = 0
-	@out = File.open("out.csv", "w")
-	@out.puts "commit,sha,time,cyclo,abstract,fanout,npath"
 	File.open REPOS_LIST do |repos|
 		repos.each do |repo_name|
+			@processed = 0
 			repo_name.chomp!
 			repo = repo_name.split("/")[1] #seperate name from GitHub user name
 			#repo_path = File.join(dir_path, "repo_clones", repo) # OSX VERSION
@@ -23,18 +22,22 @@ def check(dir_path = Dir.pwd)
 			else 
 				puts "That directory already exists"
 			end
+
+			results_file = File.open(File.join(OUTPUT_DIR, repo), "w")
+			results_file.puts "commit,sha,time,cyclo,abstract,fanout,npath"
+
 			IO.popen("git --git-dir=#{repo_path}/.git --work-tree=#{repo_path} rev-list --format='%at' master --reverse") { |io| 
 				while (sha_line = io.gets) do 
 					sha = sha_line.split(" ")[1].chomp
 					timestamp = io.gets.chomp
-					analyze_commit(repo_path, sha, timestamp)
+					analyze_commit(repo_path, results_file, sha, timestamp)
 				end 
 			}
 		end
 	end
 end
 
-def analyze_commit(repo_path, commit_sha, commit_time)
+def analyze_commit(repo_path, output_file, commit_sha, commit_time)
 
 	data_abstract = Metric.new "Class Data Abstraction Coupling is "
 	cyclomatic = Metric.new "Cyclomatic Complexity is "
@@ -52,10 +55,8 @@ def analyze_commit(repo_path, commit_sha, commit_time)
 			end
 		end
 		print "\tcyclo #{cyclomatic.length}\n\tdata_abstract #{data_abstract.length}\n\tfan_out #{fan_out.length}\n\tnpath #{npath.length}\n"
-		@out.puts [@processed = @processed + 1, commit_sha[0,8], commit_time, cyclomatic.length, data_abstract.length, fan_out.length, npath.length].join(",")
-
+		output_file.puts [@processed = @processed + 1, commit_sha[0,8], commit_time, cyclomatic.length, data_abstract.length, fan_out.length, npath.length].join(",")
 	}
-
 end
 
 def check_audit_line (line, metric)
