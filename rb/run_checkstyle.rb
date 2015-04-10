@@ -51,7 +51,6 @@ def analyze_commit(repo_path, output_file, commit_sha, commit_time)
 
 	system("git --git-dir=#{repo_path}/.git --work-tree=#{repo_path} checkout #{commit_sha} --quiet")
 	puts "CHECKOUT #{@processed} : #{commit_sha[0,8]}"
-	puts "java -jar #{File.join(SCRIPT_LOC, '..', 'checkstyle.jar')} -c #{File.join(SCRIPT_LOC, '..', 'config.xml')} #{repo_path}"
 	IO.popen("java -jar #{File.join(SCRIPT_LOC, '..', 'checkstyle.jar')} -c #{File.join(SCRIPT_LOC, '..', 'config.xml')} #{repo_path}") { |io|
 		class_count = 0
 
