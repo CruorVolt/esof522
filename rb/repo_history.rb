@@ -1,7 +1,7 @@
 require 'octokit'
+require 'fileutils'
 
-API_KEY = File.read("api_token.txt")
-REPOS_LIST = "repos.txt"
+API_KEY = File.read(File.join(File.dirname(__FILE__), "..", "api_token.txt"))
 
 client = Octokit::Client.new(:access_token => API_KEY)
 client.auto_paginate = true #auto rate-limiting and page concat (theoretically)
@@ -17,7 +17,9 @@ forks_time = issues_time
 
 def write_api_results(call_proc, time_proc, repo_name, header = ["total","time"], dir_path = Dir.pwd, type = "")
 	repo = repo_name.split("/")[1] #seperate name from user name
-	File.open(File.join(dir_path, repo, "#{repo}#{type}.csv"), "w") do |file|
+	full_path = File.join(dir_path, repo)
+	FileUtils.mkdir_p full_path
+	File.open(File.join(full_path, "#{repo}#{type}.csv"), "w") do |file|
 		results = call_proc.call repo_name
 		count = results.length
 		file.puts header.join(",")
@@ -30,10 +32,10 @@ def write_api_results(call_proc, time_proc, repo_name, header = ["total","time"]
 	end
 end
 
-File.open REPOS_LIST do |repos|
+File.open File.join(Dir.pwd, "..", "repos.txt") do |repos|
 	repos.each do |repo|
 		repo.chomp!
-		file_path = File.join(Dir.pwd, "api_results")
+		file_path = File.join(Dir.pwd, "..",  "api_results")
 		puts "starting"
 		write_api_results(issues_call, issues_time, repo, ["total", "time"], file_path, "_issues")
 		puts "done with issues for #{repo}"
