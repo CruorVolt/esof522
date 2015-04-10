@@ -1,6 +1,7 @@
 require 'octokit'
 require 'fileutils'
 
+SCRIPT_LOC = File.dirname(__FILE__)
 API_KEY = File.read(File.join(File.dirname(__FILE__), "..", "api_token.txt"))
 
 client = Octokit::Client.new(:access_token => API_KEY)
@@ -15,7 +16,7 @@ commits_time = Proc.new do |commit| commit.commit.author.date.to_i end
 forks_call = Proc.new do |repo| client.forks(repo) end
 forks_time = issues_time
 
-def write_api_results(call_proc, time_proc, repo_name, header = ["total","time"], dir_path = Dir.pwd, type = "")
+def write_api_results(call_proc, time_proc, repo_name, header = ["total","time"], dir_path = SCRIPT_LOC, type = "")
 	repo = repo_name.split("/")[1] #seperate name from user name
 	full_path = File.join(dir_path, repo)
 	FileUtils.mkdir_p full_path
@@ -32,10 +33,10 @@ def write_api_results(call_proc, time_proc, repo_name, header = ["total","time"]
 	end
 end
 
-File.open File.join(Dir.pwd, "..", "repos.txt") do |repos|
+File.open File.join(SCRIPT_LOC, "..", "repos.txt") do |repos|
 	repos.each do |repo|
 		repo.chomp!
-		file_path = File.join(Dir.pwd, "..",  "api_results")
+		file_path = File.join(SCRIPT_LOC, "..",  "api_results")
 		puts "starting"
 		write_api_results(issues_call, issues_time, repo, ["total", "time"], file_path, "_issues")
 		puts "done with issues for #{repo}"

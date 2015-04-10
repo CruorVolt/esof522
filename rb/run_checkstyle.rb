@@ -1,29 +1,34 @@
 require_relative 'metric'
+require 'fileutils'
 
-REPOS_LIST = "repos.txt"
-OUTPUT_DIR = "checkstyle_results"
+REPOS_LIST = "../repos.txt"
+SCRIPT_LOC = File.dirname(__FILE__)
+OUTPUT_DIR = File.join(SCRIPT_LOC, "..", "checkstyle_results")
 
 def is_float?(obj)
 	Float(obj.sub(/,/,"")) rescue false #thousands have commas in the string for some reason
 end
 
-def check(dir_path = Dir.pwd)
-	File.open REPOS_LIST do |repos|
+def check(dir_path = SCRIPT_LOC)
+	repos_path = File.join(SCRIPT_LOC, "..", "repo_clones")
+	puts "making #{repos_path}"
+	FileUtils.mkdir_p repos_path
+	File.open File.join(SCRIPT_LOC, REPOS_LIST) do |repos|
 		repos.each do |repo_name|
 			@processed = 0
 			repo_name.chomp!
 			repo = repo_name.split("/")[1] #seperate name from GitHub user name
-			#repo_path = File.join(dir_path, "repo_clones", repo) # OSX VERSION
-			repo_path = File.join("repo_clones", repo) # WINDOWS VERSION
+			repo_path = File.join(repos_path, repo) # WINDOWS VERSION
 			puts "found repo: #{repo}, checking directory #{repo_path}"
 			if !(Dir.exist? repo_path) #clone if repo doesn't exist
 				puts "That directory doesn't exist, running git clone https://github.com/#{repo_name}.git #{File.join(dir_path, 'repo_clones')}"
-				system("git clone https://github.com/#{repo_name}.git #{File.join(dir_path, 'repo_clones', repo)}")
+				system("git clone https://github.com/#{repo_name}.git #{File.join(dir_path, "..", 'repo_clones', repo)}")
 			else 
 				puts "That directory already exists"
 			end
 
-			results_file = File.open(File.join(OUTPUT_DIR, repo), "w")
+			FileUtils.mkdir_p OUTPUT_DIR
+			results_file = File.open(File.join(OUTPUT_DIR, "#{repo}.csv"), "w")
 			results_file.puts "commit,sha,time,cyclo,abstract,fanout,npath"
 
 			IO.popen("git --git-dir=#{repo_path}/.git --work-tree=#{repo_path} rev-list --format='%at' master --reverse") { |io| 
@@ -46,7 +51,8 @@ def analyze_commit(repo_path, output_file, commit_sha, commit_time)
 
 	system("git --git-dir=#{repo_path}/.git --work-tree=#{repo_path} checkout #{commit_sha} --quiet")
 	puts "CHECKOUT #{@processed} : #{commit_sha[0,8]}"
-	IO.popen("java -jar checkstyle.jar -c config.xml #{repo_path}") { |io|
+	puts "java -jar #{File.join(SCRIPT_LOC, '..', 'checkstyle.jar')} -c #{File.join(SCRIPT_LOC, '..', 'config.xml')} #{repo_path}"
+	IO.popen("java -jar #{File.join(SCRIPT_LOC, '..', 'checkstyle.jar')} -c #{File.join(SCRIPT_LOC, '..', 'config.xml')} #{repo_path}") { |io|
 		class_count = 0
 
 		while (audit_line = io.gets) do 
