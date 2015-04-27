@@ -1,5 +1,7 @@
 library(plotrix)
 library(plyr)
+library(pspline)
+
 #setwd("~/Documents/esof_522/project")
 
 fillNAgaps <- function(x, firstBack=FALSE) {
@@ -132,3 +134,24 @@ roboguice = colwise(fillNAgaps)(Reduce(function(...) merge(..., by='time', all=T
 )), firstBack='TRUE')
 colnames(roboguice) <- c("time", "forks", "issues", "commits", "sha", "cyclo", "abstract", "fanout", "npath")
 
+#plot(
+#  dagger$time,
+#  rescale(predict(sm.spline(dagger$time, dagger$commits), dagger$time, 1), 0:1),
+#  type = 'l'
+#)
+
+#plot(lowess(dagger$time, dagger$commits, f=1/20), type='l')
+smoothcommits <- lowess(dagger$time, dagger$commits, f=1/15)
+smoothissues <- lowess(dagger$time, dagger$issues, f=1/15)
+smoothforks <- lowess(dagger$time, dagger$forks, f=1/15)
+smooth = data.frame(
+  time = smoothcommits[1],
+  commits = smoothcommits[2],
+  forks = smoothforks[2],
+  issues = smoothissues[2]
+  )
+colnames(smooth) <- c("time", "commits", "forks", "issues")
+
+> arima_forks <- auto.arima(dagger$forks)
+> arima_issues <- auto.arima(dagger$issues)
+> arima_commits <- auto.arima(dagger$commits)
