@@ -2,14 +2,10 @@ library(plotrix)
 library(plyr)
 library(pspline)
 
-#setwd("~/Documents/esof_522/project")
+setwd("~/Documents/esof_522/project")
 
 fillNAgaps <- function(x, firstBack=FALSE) {
-  ## NA's in a vector or factor are replaced with last non-NA values
-  ## If firstBack is TRUE, it will fill in leading NA's with the first
-  ## non-NA value. If FALSE, it will not change leading NA's.
   
-  # If it's a factor, store the level labels and convert to integer
   lvls <- NULL
   if (is.factor(x)) {
     lvls <- levels(x)
@@ -17,9 +13,7 @@ fillNAgaps <- function(x, firstBack=FALSE) {
   }
   
   goodIdx <- !is.na(x)
-  
-  # These are the non-NA values from x only
-  # Add a leading NA or take the first good value, depending on firstBack   
+     
   if (firstBack)   goodVals <- c(x[goodIdx][1], x[goodIdx])
   else             goodVals <- c(NA,            x[goodIdx])
   
@@ -62,7 +56,8 @@ dagger = colwise(fillNAgaps)(Reduce(function(...) merge(..., by='time', all=T), 
 	read.csv("api_results/dagger/dagger_issues.csv"), 
 	read.csv("checkstyle_results/dagger.csv")
 )), firstBack='TRUE')
-colnames(dagger) <- c("time", "forks", "issues", "commits", "sha", "cyclo", "abstract", "fanout", "npath")
+dagger$combined = dagger$cyclo + dagger$npath + dagger$abstract + dagger$fanout
+colnames(dagger) <- c("time", "forks", "issues", "commits", "sha", "cyclo", "abstract", "fanout", "npath", "combined")
 
 eclipsethemes = colwise(fillNAgaps)(Reduce(function(...) merge(..., by='time', all=T), list(
 	read.csv("api_results/eclipse-themes/eclipse-themes_forks.csv"), 
@@ -111,7 +106,9 @@ okhttp = colwise(fillNAgaps)(Reduce(function(...) merge(..., by='time', all=T), 
 	read.csv("api_results/okhttp/okhttp_issues.csv"), 
 	read.csv("checkstyle_results/okhttp.csv")
 )), firstBack='TRUE')
-colnames(okhttp) <- c("time", "forks", "issues", "commits", "sha", "cyclo", "abstract", "fanout", "npath")
+okhttp$combined = okhttp$cyclo + okhttp$npath + okhttp$abstract + okhttp$fanout
+colnames(okhttp) <- c("time", "forks", "issues", "commits", "sha", "cyclo", "abstract", "fanout", "npath", "combined")
+
 
 phonegapfacebookplugin = colwise(fillNAgaps)(Reduce(function(...) merge(..., by='time', all=T), list(
 	read.csv("api_results/phonegap-facebook-plugin/phonegap-facebook-plugin_forks.csv"), 
@@ -152,6 +149,26 @@ smooth = data.frame(
   )
 colnames(smooth) <- c("time", "commits", "forks", "issues")
 
-> arima_forks <- auto.arima(dagger$forks)
-> arima_issues <- auto.arima(dagger$issues)
-> arima_commits <- auto.arima(dagger$commits)
+smooth_cyclo <- lowess(dagger$time, dagger$cyclo, f=1/30)
+smooth_npath <- lowess(dagger$time, dagger$npath, f=1/30)
+smooth_abstract <- lowess(dagger$time, dagger$abstract, f=1/30)
+smooth_fanout <- lowess(dagger$time, dagger$fanout, f=1/30)
+smooth_combined <- lowess(dagger$time, dagger$combined, f=1/30)
+
+truncated_time <- dagger$time[2:1630]
+commit_deriv <- diff(smoothcommits$y)/diff(smoothcommits$x)
+issues_deriv <- diff(smoothissues$y)/diff(smoothissues$x)
+forks_deriv <- diff(smoothforks$y)/diff(smoothforks$x)
+quality_deriv <- diff(smooth_combined$y)/diff(smooth_combined$x)
+
+#arima_forks <- auto.arima(dagger$forks)
+#arima_issues <- auto.arima(dagger$issues)
+#arima_commits <- auto.arima(dagger$commits)
+
+#plot
+#smooth
+#rescale
+#derivative
+#correlate - 'pearsons'
+
+  
