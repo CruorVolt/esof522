@@ -27,6 +27,7 @@ ANEFacebook = colwise(fillNAgaps)(Reduce(function(...) merge(..., by='time', all
 	read.csv("checkstyle_results/ANE-Facebook.csv")
 )), firstBack='TRUE')
 ANEFacebook$combined = ANEFacebook$cyclo + ANEFacebook$npath + ANEFacebook$abstract + ANEFacebook$fanout
+ANEFacebook$time <- as.POSIXct(ANEFacebook$time, origin="1970-01-01") 
 colnames(ANEFacebook) <- c("time", "forks", "issues", "commits", "sha", "cyclo", "abstract", "fanout", "npath")
 
 
@@ -36,6 +37,7 @@ androidsimplefacebook = colwise(fillNAgaps)(Reduce(function(...) merge(..., by='
 	read.csv("checkstyle_results/android-simple-facebook.csv")
 )), firstBack='TRUE')
 androidsimplefacebook$combined = androidsimplefacebook$cyclo + androidsimplefacebook$npath + androidsimplefacebook$abstract + androidsimplefacebook$fanout
+androidsimplefacebook$time <- as.POSIXct(androidsimplefacebook$time, origin="1970-01-01") 
 colnames(androidsimplefacebook) <- c("time", "forks", "issues", "commits", "sha", "cyclo", "abstract", "fanout", "npath")
 
 dagger = colwise(fillNAgaps)(Reduce(function(...) merge(..., by='time', all=T), list(
@@ -44,6 +46,7 @@ dagger = colwise(fillNAgaps)(Reduce(function(...) merge(..., by='time', all=T), 
 	read.csv("checkstyle_results/dagger.csv")
 )), firstBack='TRUE')
 dagger$combined = dagger$cyclo + dagger$npath + dagger$abstract + dagger$fanout
+dagger$time <- as.POSIXct(dagger$time, origin="1970-01-01") 
 colnames(dagger) <- c("time", "forks", "issues", "commits", "sha", "cyclo", "abstract", "fanout", "npath", "combined")
 
 eclipsethemes = colwise(fillNAgaps)(Reduce(function(...) merge(..., by='time', all=T), list(
@@ -52,6 +55,7 @@ eclipsethemes = colwise(fillNAgaps)(Reduce(function(...) merge(..., by='time', a
 	read.csv("checkstyle_results/eclipse-themes.csv")
 )), firstBack='TRUE')
 eclipsethemes$combined = eclipsethemes$cyclo + eclipsethemes$npath + eclipsethemes$abstract + eclipsethemes$fanout
+eclipsethemes$time <- as.POSIXct(eclipsethemes$time, origin="1970-01-01") 
 colnames(eclipsethemes) <- c("time", "forks", "issues", "commits", "sha", "cyclo", "abstract", "fanout", "npath")
 
 facebookandroidsdk = colwise(fillNAgaps)(Reduce(function(...) merge(..., by='time', all=T), list(
@@ -60,6 +64,7 @@ facebookandroidsdk = colwise(fillNAgaps)(Reduce(function(...) merge(..., by='tim
 	read.csv("checkstyle_results/facebook-android-sdk.csv")
 )), firstBack='TRUE')
 facebookandroidsdk$combined = facebookandroidsdk$cyclo + facebookandroidsdk$npath + facebookandroidsdk$abstract + facebookandroidsdk$fanout
+facebookandroidsdk$time <- as.POSIXct(facebookandroidsdk$time, origin="1970-01-01") 
 colnames(facebookandroidsdk) <- c("time", "forks", "issues", "commits", "sha", "cyclo", "abstract", "fanout", "npath")
 
 golangideaplugin = colwise(fillNAgaps)(Reduce(function(...) merge(..., by='time', all=T), list(
@@ -68,6 +73,7 @@ golangideaplugin = colwise(fillNAgaps)(Reduce(function(...) merge(..., by='time'
 	read.csv("checkstyle_results/go-lang-idea-plugin.csv")
 )), firstBack='TRUE')
 golangideaplugin$combined = golangideaplugin$cyclo + golangideaplugin$npath + golangideaplugin$abstract + golangideaplugin$fanout
+golangideaplugin$time <- as.POSIXct(golangideaplugin$time, origin="1970-01-01") 
 colnames(golangideaplugin) <- c("time", "forks", "issues", "commits", "sha", "cyclo", "abstract", "fanout", "npath")
 
 guice = colwise(fillNAgaps)(Reduce(function(...) merge(..., by='time', all=T), list(
@@ -76,6 +82,7 @@ guice = colwise(fillNAgaps)(Reduce(function(...) merge(..., by='time', all=T), l
 	read.csv("checkstyle_results/guice.csv")
 )), firstBack='TRUE')
 guice$combined = guice$cyclo + guice$npath + guice$abstract + guice$fanout
+guice$time <- as.POSIXct(guice$time, origin="1970-01-01") 
 colnames(guice) <- c("time", "forks", "issues", "commits", "sha", "cyclo", "abstract", "fanout", "npath")
 
 jedis= colwise(fillNAgaps)(Reduce(function(...) merge(..., by='time', all=T), list(
@@ -84,6 +91,7 @@ jedis= colwise(fillNAgaps)(Reduce(function(...) merge(..., by='time', all=T), li
 	read.csv("checkstyle_results/jedis.csv")
 )), firstBack='TRUE')
 jedis$combined = jedis$cyclo + jedis$npath + jedis$abstract + jedis$fanout
+jedis$time <- as.POSIXct(jedis$time, origin="1970-01-01") 
 colnames(jedis) <- c("time", "forks", "issues", "commits", "sha", "cyclo", "abstract", "fanout", "npath")
 
 junit = colwise(fillNAgaps)(Reduce(function(...) merge(..., by='time', all=T), list(
@@ -92,6 +100,7 @@ junit = colwise(fillNAgaps)(Reduce(function(...) merge(..., by='time', all=T), l
 	read.csv("checkstyle_results/junit.csv")
 )), firstBack='TRUE')
 junit$combined = junit$cyclo + junit$npath + junit$abstract + junit$fanout
+junit$time <- as.POSIXct(junit$time, origin="1970-01-01") 
 colnames(junit) <- c("time", "forks", "issues", "commits", "sha", "cyclo", "abstract", "fanout", "npath")
 
 okhttp = colwise(fillNAgaps)(Reduce(function(...) merge(..., by='time', all=T), list(
@@ -100,6 +109,7 @@ okhttp = colwise(fillNAgaps)(Reduce(function(...) merge(..., by='time', all=T), 
 	read.csv("checkstyle_results/okhttp.csv")
 )), firstBack='TRUE')
 okhttp$combined = okhttp$cyclo + okhttp$npath + okhttp$abstract + okhttp$fanout
+okhttp$time <- as.POSIXct(okhttp$time, origin="1970-01-01") 
 colnames(okhttp) <- c("time", "forks", "issues", "commits", "sha", "cyclo", "abstract", "fanout", "npath", "combined")
 
 
@@ -109,6 +119,7 @@ phonegapfacebookplugin = colwise(fillNAgaps)(Reduce(function(...) merge(..., by=
 	read.csv("checkstyle_results/phonegap-facebook-plugin.csv")
 )), firstBack='TRUE')
 phonegapfacebookplugin$combined = phonegapfacebookplugin$cyclo + phonegapfacebookplugin$npath + phonegapfacebookplugin$abstract + phonegapfacebookplugin$fanout
+phonegapfacebookplugin$time <- as.POSIXct(phonegapfacebookplugin$time, origin="1970-01-01") 
 colnames(phonegapfacebookplugin) <- c("time", "forks", "issues", "commits", "sha", "cyclo", "abstract", "fanout", "npath")
 
 retrofit = colwise(fillNAgaps)(Reduce(function(...) merge(..., by='time', all=T), list(
@@ -117,6 +128,7 @@ retrofit = colwise(fillNAgaps)(Reduce(function(...) merge(..., by='time', all=T)
 	read.csv("checkstyle_results/retrofit.csv")
 )), firstBack='TRUE')
 retrofit$combined = retrofit$cyclo + retrofit$npath + retrofit$abstract + retrofit$fanout
+retrofit$time <- as.POSIXct(retrofit$time, origin="1970-01-01") 
 colnames(retrofit) <- c("time", "forks", "issues", "commits", "sha", "cyclo", "abstract", "fanout", "npath")
 
 roboguice = colwise(fillNAgaps)(Reduce(function(...) merge(..., by='time', all=T), list(
@@ -125,6 +137,7 @@ roboguice = colwise(fillNAgaps)(Reduce(function(...) merge(..., by='time', all=T
 	read.csv("checkstyle_results/roboguice.csv")
 )), firstBack='TRUE')
 roboguice$combined = roboguice$cyclo + roboguice$npath + roboguice$abstract + roboguice$fanout
+roboguice$time <- as.POSIXct(roboguice$time, origin="1970-01-01") 
 colnames(roboguice) <- c("time", "forks", "issues", "commits", "sha", "cyclo", "abstract", "fanout", "npath")
 
 #plot(lowess(dagger$time, dagger$commits, f=1/20), type='l')
