@@ -30,7 +30,6 @@ ANEFacebook$combined = ANEFacebook$cyclo + ANEFacebook$npath + ANEFacebook$abstr
 ANEFacebook$time <- as.POSIXct(ANEFacebook$time, origin="1970-01-01") 
 colnames(ANEFacebook) <- c("time", "forks", "issues", "commits", "sha", "cyclo", "abstract", "fanout", "npath", "combined")
 
-
 androidsimplefacebook = colwise(fillNAgaps)(Reduce(function(...) merge(..., by='time', all=T), list(
 	read.csv("api_results/android-simple-facebook/android-simple-facebook_forks.csv"), 
 	read.csv("api_results/android-simple-facebook/android-simple-facebook_issues.csv"), 
@@ -158,6 +157,8 @@ smooth_abstract <- lowess(dagger$time, dagger$abstract, f=1/30)
 smooth_fanout <- lowess(dagger$time, dagger$fanout, f=1/30)
 smooth_combined <- lowess(dagger$time, dagger$combined, f=1/30)
 
+#^^ Make sure date format is correct
+
 truncated_time <- dagger$time[2:1630]
 commit_deriv <- diff(smoothcommits$y)/diff(smoothcommits$x)
 issues_deriv <- diff(smoothissues$y)/diff(smoothissues$x)
@@ -171,5 +172,3 @@ quality_deriv <- diff(smooth_combined$y)/diff(smooth_combined$x)
 #rescale
 #derivative
 #correlate - 'pearsons'
-
-  
